@@ -40,5 +40,11 @@ A automação é composta por 5 scripts, sendo 4 para inicialização e 1 para o
  **iniciar_site.bat**
  - Verificação/Instalação das dependências do Node.
  - Inicialização do servidor Node.
+ 
+---
 
- ---
+### Etapas 
+Para executar os serviços, é necessário seguir a ordem:
+1. INSTALAR_ANTES.exe: Irá instalar a ferramenta **wkhtmltox**, que tem como objetivo converter HTML para PDF nativamente.
+2. INICIAR_SERVICOS.bat: Irá invocar o restante dos scripts.
+   
