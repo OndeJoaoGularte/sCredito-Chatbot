@@ -44,6 +44,10 @@ A automação é composta por 5 scripts, sendo 4 para inicialização e 1 para o
 ---
 
 ### Etapas 
+Adicionar chaves de API do Gemini em:
+* Criar **.env**  em ***/scredito_website***, e adicionar: **"GEMINI_API_KEY=SUA_CHAVE_AQUI"**.
+* Em ***scredito_adk/scredito***, adicionar no campo **"GOOGLE_API_KEY"** dos arquivos **.env** em ***/***, ***/agente_analista***, ***/agente_dashboard*** e ***/agente_pdf***.
+  
 Para executar os serviços, é necessário seguir a ordem:
 1. INSTALAR_ANTES.exe: Irá instalar a ferramenta **wkhtmltox**, que tem como objetivo converter HTML para PDF nativamente.
 2. INICIAR_SERVICOS.bat: Irá invocar o restante dos scripts.
