@@ -25,7 +25,7 @@ A automação é composta por 5 scripts, sendo 4 para inicialização e 1 para o
 **INICIAR_SERVICOS.bat**
  - Invocação dos scripts dos serviços de ADK, ML, UI e WEBSITE.
 
-**iniciar_adk_v2.bat**
+**iniciar_adk.bat**
  - Criação de ambiente virtual Python / Instalação de dependências.
  - Inicialização de API do Google ADK.
 
