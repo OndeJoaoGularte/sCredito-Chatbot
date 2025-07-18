@@ -1,4 +1,3 @@
-# agent.py (no diretório /home/eduardo/scredito/)
 import sys
 import os
 
