@@ -1,7 +1,5 @@
-// Cole aqui o seu código JavaScript do formulário que você já me forneceu
-// Nenhuma alteração é necessária neste arquivo.
 document.addEventListener('DOMContentLoaded', () => {
-    
+
     const form = document.getElementById('clienteForm');
 
     form.addEventListener('submit', async (event) => {
@@ -15,13 +13,12 @@ document.addEventListener('DOMContentLoaded', () => {
             const temNegocioProprio = document.getElementById('negocioProprio').checked;
             const scoreCredito = parseInt(document.getElementById('scoreCredito').value, 10);
             const dataCadastro = document.getElementById('dataCadastro').value;
-            
+
             const clienteId = crypto.randomUUID();
             const usaOrientacaoFinanceira = false;
 
             console.log(`Consultando API de perfil com Renda: ${rendaFamiliar} e Score: ${scoreCredito}...`);
-            
-            // ATENÇÃO: Verifique se a URL da sua API de perfil está correta
+
             const responseApi = await fetch('http://127.0.0.1:5000/perfil', {
                 method: 'POST',
                 headers: {
@@ -32,12 +29,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     score_credito: scoreCredito
                 }),
             });
-            
+
             if (!responseApi.ok) {
                 throw new Error(`Erro na API: ${responseApi.status} ${responseApi.statusText}`);
             }
 
-            const perfilData = await responseApi.json();            
+            const perfilData = await responseApi.json();
             const perfil = perfilData['perfil_predito'];
 
             const clienteParaSalvar = {
@@ -53,7 +50,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 perfil: perfil
             };
 
-            console.log(clienteParaSalvar);
+            const salvarCliente = await fetch('http://127.0.0.1:5000/salvar_cliente', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(clienteParaSalvar)
+            });
+
+            if (!salvarCliente.ok) {
+                const errorData = await salvarCliente.json();
+                throw new Error(`Erro na API ao salvar: ${errorData.erro || salvarCliente.statusText}`);
+            }
+
+            const resultadoSalvar = await salvarCliente.json();
+            console.log('Resposta do servidor:', resultadoSalvar.mensagem);
 
             alert('Cliente cadastrado com sucesso!');
             form.reset();
