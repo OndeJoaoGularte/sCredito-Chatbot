@@ -5,6 +5,9 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import joblib
 import pandas as pd
+import os
+
+CSV_PATH = os.path.join(os.path.dirname(__file__), '..', 'scredito_clientes_perfil.csv')
 
 # Inicializa a aplicação Flask
 app = Flask(__name__)
@@ -36,7 +39,6 @@ def prever_perfil():
             return jsonify({'erro': 'Dados incompletos. Forneça "renda_familiar" e "score_credito".'}), 400
 
         # 3. Converte os dados para um DataFrame do Pandas
-        # O modelo espera um DataFrame com colunas na ordem correta
         df_entrada = pd.DataFrame([dados_entrada], columns=['renda_familiar', 'score_credito'])
 
         # 4. Usa o modelo para fazer a previsão
@@ -54,7 +56,37 @@ def prever_perfil():
         traceback.print_exc()
         return jsonify({'erro': 'Ocorreu um erro inesperado.', 'detalhes': str(e)}), 500
 
-# Executa o servidor
+@app.route('/salvar_cliente', methods=['POST'])
+def salvar_cliente():
+    try:
+        cliente_para_salvar = request.get_json()
+        print(f"📥 [SALVAR] Dados recebidos para salvar: {cliente_para_salvar}")
+
+        colunas = [
+            "cliente_id", "idade", "renda_familiar", "regiao", "escolaridade",
+            "tem_negocio_proprio", "score_credito", "data_cadastro",
+            "usa_orientacao_financeira", "perfil"
+        ]
+        
+        df_novo_cliente = pd.DataFrame([cliente_para_salvar], columns=colunas)
+
+        arquivo_existe = os.path.exists(CSV_PATH)
+        
+        df_novo_cliente.to_csv(
+            CSV_PATH, 
+            mode='a', 
+            header=not arquivo_existe, 
+            index=False,
+            encoding='utf-8'
+        )
+        
+        print(f"✅ [SALVAR] Cliente {cliente_para_salvar.get('cliente_id')} salvo com sucesso!")
+        return jsonify({"status": "sucesso", "mensagem": "Cliente cadastrado com sucesso!"}), 201
+
+    except Exception as e:
+        traceback.print_exc()
+        return jsonify({'erro': 'Ocorreu um erro ao salvar o cliente.', 'detalhes': str(e)}), 500
+    
+    
 if __name__ == '__main__':
-    # host='0.0.0.0' permite que a API seja acessada de outros dispositivos na mesma rede
     app.run(host='0.0.0.0', port=5000, debug=True)
