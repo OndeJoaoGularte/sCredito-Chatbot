@@ -6,7 +6,12 @@ const path = require('path');
 const { marked } = require('marked');
 
 const app = express();
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 3001;
+
+// --- CONFIGURAÇÕES PARA O ADK ---
+const ADK_API_URL = 'http://127.0.0.1:8000';
+const ADK_USER_ID = 'u_scredito_web';
+const ADK_SESSION_ID = 's_scredito_web';
 
 app.use(cors());
 app.use(express.json());
@@ -125,7 +130,21 @@ app.delete('/api/historico/:sessionId', (req, res) => {
     res.json({ sucesso: true, mensagem: 'Histórico apagado.' });
 });
 
+// --- FUNÇÃO PARA CRIAR SESSÃO ADK NA INICIALIZAÇÃO ---
+const criarSessaoADK = async () => {
+    try {
+        console.log("Tentando criar sessão na API do ADK...");
+        const response = await axios.post(`${ADK_API_URL}/apps/agent/users/${ADK_USER_ID}/sessions/${ADK_SESSION_ID}`);
+        console.log("Sessão com a API do ADK criada com sucesso!");
+    } catch (error) {
+        console.error('Erro ao criar a sessão com a API do ADK.');
+    }
+};
+
+
+
 // Iniciar o servidor
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`🚀 Servidor rodando em http://localhost:${PORT}`);
+    criarSessaoADK();
 });
